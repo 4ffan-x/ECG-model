@@ -1,7 +1,7 @@
 # ❤️ Explainable Multi-Label ECG Classification using 1D CNN on PTB-XL
 
 ## 📌 Overview
-This project implements an end-to-end deep learning pipeline for multi-label ECG classification using the PTB-XL dataset. A 1D Convolutional Neural Network (CNN) is trained on 12-lead ECG signals to classify multiple cardiac diagnostic superclasses. Grad-CAM-based explainability is integrated to visualize the ECG regions influencing model predictions.
+This project presents an end-to-end deep learning pipeline for multi-label ECG classification using the PTB-XL dataset. A 1D Convolutional Neural Network (CNN) was trained on 12-lead ECG signals to classify multiple cardiac diagnostic superclasses. Grad-CAM-based explainability was integrated to visualize the ECG regions influencing model predictions.
 
 ### 🚀 Project Highlights
 - 🫀 12-Lead ECG Signal Classification
@@ -10,12 +10,12 @@ This project implements an end-to-end deep learning pipeline for multi-label ECG
 - 🔍 Explainable AI using Grad-CAM
 - ⚡ Memory-Optimized ECG Processing Pipeline
 - 📊 Comprehensive Evaluation Metrics
+- 🚀 Real-Time ECG Prediction System
 
 ---
-## 👨‍💻 Author
 
-## Md Affan
-Deep Learning & Medical Imaging Enthusiast
+## 👨‍💻 Author
+**Md Affan**
 
 ---
 
@@ -30,6 +30,7 @@ Dataset Used:
 - 5 diagnostic superclasses
 
 ### 🩺 Diagnostic Superclasses
+
 | Label | Description |
 |---|---|
 | NORM | Normal ECG |
@@ -63,51 +64,58 @@ Train / Validation / Test Split
 Evaluation Metrics
         ↓
 Grad-CAM Explainability
+        ↓
+Real-Time ECG Prediction System
 ```
 
 ---
 
-# 📊 Exploratory Data Analysis (EDA)
+# 🧹 Data Preprocessing
 
-Performed analyses include:
-- 📌 Diagnostic superclass distribution
-- ⚖️ Class imbalance visualization
-- 🖥️ ECG device distribution
-- 👥 Age distribution by ECG device type
-- 📈 Sample ECG waveform visualization
+## 📥 Data Loading
+The following files were loaded:
+- `ptbxl_database.csv`
+- `scp_statements.csv`
 
-### 📚 Visualization Libraries
-- Matplotlib
-- Seaborn
+Diagnostic superclasses were aggregated and one-hot encoded.
 
 ---
 
-# ⚙️ ECG Signal Preprocessing
+## ⚡ ECG Signal Loading & Normalization
 
-## 📥 Signal Loading
-ECG signals were loaded using the `wfdb` library.
+Low-resolution ECG signals (`filename_lr`) were loaded using the `wfdb` library.
 
-## ⚡ Resolution Selection
-Low-resolution ECG signals (100 Hz) were used to reduce memory usage.
-
-### ECG Shape
+### ECG Signal Shape
 ```python
-(1000, 12)
+(21837, 1000, 12)
 ```
 
 Where:
+- `21837` → Total ECG records
 - `1000` → Time samples
 - `12` → ECG leads
 
-## 📏 Normalization
+### 📏 Normalization
 Z-score normalization was applied across ECG leads and time dimensions.
-
-## 🏷️ Label Encoding
-Multi-label diagnostic superclasses were one-hot encoded.
 
 ---
 
-# ✂️ Dataset Split
+## 🏷️ Label Encoding
+
+Diagnostic superclasses were:
+- Mapped to integer indices
+- One-hot encoded into `y_labels`
+
+### Label Shape
+```python
+(21837, 5)
+```
+
+---
+
+# ✂️ Dataset Splitting
+
+The dataset was split using stratified sampling.
 
 | Dataset | Samples |
 |---|---|
@@ -115,78 +123,199 @@ Multi-label diagnostic superclasses were one-hot encoded.
 | Validation | 2,184 |
 | Testing | 4,368 |
 
-✅ Stratified splitting was used to preserve class distribution.
+### 📌 Split Ratio
+```text
+70% Training
+10% Validation
+20% Testing
+```
 
 ---
 
 # 🏗️ Model Architecture
 
-The model is a **1D CNN** built using the TensorFlow/Keras Functional API.
+The model is a **1D CNN** implemented using TensorFlow/Keras Functional API.
 
-### 🔧 Architecture Components
+## 🔧 Architecture Components
 - Conv1D Layers
-- Batch Normalization
+- BatchNormalization
+- ReLU Activation
 - MaxPooling1D
 - GlobalAveragePooling1D
-- Dense Layers
-- Dropout Regularization
+- Dense Layer (64 Units)
+- Dropout (0.5)
+- L2 Regularization
 - Sigmoid Output Layer
-
-### 🎯 Output
-Multi-label probabilities for 5 ECG diagnostic superclasses.
 
 ---
 
-# 🏋️ Training Configuration
+# ⚙️ Model Compilation
 
 | Parameter | Value |
 |---|---|
 | Optimizer | Adam |
-| Learning Rate | 0.001 |
+| Learning Rate | 0.0005 |
 | Loss Function | Binary Crossentropy |
-| Epochs | 25 |
-| Batch Size | 32 |
+| Metrics | Accuracy, AUC |
 | Output Activation | Sigmoid |
-
-### 🛠️ Callbacks Used
-- EarlyStopping
-- ModelCheckpoint
 
 ---
 
-# 📈 Evaluation Metrics
+# 🛠️ Training Configuration
 
-The model was evaluated using:
-- ✅ Precision
-- ✅ Recall
-- ✅ F1-score
-- ✅ AUROC
-- ✅ ROC Curves
-- ✅ Confusion Matrices
+### 📌 Callbacks Used
+- ReduceLROnPlateau
+- EarlyStopping
+- ModelCheckpoint
 
-## 🏆 Final Results
+### Callback Settings
+| Callback | Configuration |
+|---|---|
+| ReduceLROnPlateau | patience=3, factor=0.5 |
+| EarlyStopping | patience=5 |
+| ModelCheckpoint | `best_cnn_model.keras` |
+
+### 🏋️ Training
+The model was trained for:
+```text
+30 Epochs
+```
+
+---
+
+# 📈 Training Results
+
+## 📊 Training Curves
+
+### 🔹 Accuracy & Loss Curves
+> Add training accuracy/loss graph here
+
+```text
+images/training_curves.png
+```
+
+Example Markdown:
+```markdown
+![Training Curves](images/training_curves.png)
+```
+
+---
+
+# 📊 Model Evaluation
+
+The best saved model (`best_cnn_model.keras`) was loaded for evaluation.
+
+## 🏆 Final Performance Metrics
 
 | Metric | Score |
 |---|---|
-| Micro F1-score | 0.765 |
-| Macro AUROC | 0.927 |
+| Micro F1-score | 0.7696 |
+| Macro AUROC | 0.9248 |
+
+---
+
+## 📌 Classification Report
+
+| Class | Precision | Recall | F1-score |
+|---|---|---|---|
+| CD | 0.83 | 0.71 | 0.77 |
+| HYP | 0.69 | 0.40 | 0.51 |
+| MI | 0.76 | 0.72 | 0.74 |
+| NORM | 0.88 | 0.85 | 0.86 |
+| STTC | 0.78 | 0.69 | 0.73 |
+
+---
+
+# 📉 Confusion Matrices
+
+> Add confusion matrix images here
+
+```text
+images/confusion_matrix_cd.png
+images/confusion_matrix_mi.png
+images/confusion_matrix_norm.png
+```
+
+Example Markdown:
+```markdown
+![Confusion Matrix](images/confusion_matrix_mi.png)
+```
+
+---
+
+# 📈 ROC Curves
+
+> Add ROC curve visualizations here
+
+```text
+images/roc_curves.png
+```
+
+Example Markdown:
+```markdown
+![ROC Curves](images/roc_curves.png)
+```
 
 ---
 
 # 🔍 Explainable AI using Grad-CAM
 
-Grad-CAM was implemented to improve model interpretability.
+Grad-CAM was implemented to improve model interpretability and visualize the ECG regions influencing predictions.
 
-### 💡 Grad-CAM Heatmaps
-The generated heatmaps:
-- Highlight important ECG regions
-- Show influential leads and time segments
-- Explain model predictions visually
+### 📌 Functions Implemented
+- `make_gradcam_heatmap`
+- `display_gradcam`
 
-### 🎯 Benefits
-- Improved transparency
-- Better clinical interpretability
-- Increased trustworthiness of predictions
+### 🎯 Grad-CAM Features
+- Highlights important ECG regions
+- Identifies influential leads
+- Explains model predictions visually
+- Improves trustworthiness of predictions
+
+---
+
+# 🌡️ Grad-CAM Visualizations
+
+## 📌 Sample Grad-CAM Prediction
+
+> Add Grad-CAM prediction images here
+
+```text
+images/gradcam_sample1.png
+images/gradcam_sample2.png
+```
+
+Example Markdown:
+```markdown
+![Grad-CAM Visualization](images/gradcam_sample1.png)
+```
+
+---
+
+# 🚀 Real-Time ECG Prediction System
+
+Two prediction functions were implemented:
+- `ecg_detection_system`
+- `ecg_detection_system_from_file_path`
+
+These functions enable:
+- Real-time ECG prediction
+- ECG classification from custom file paths
+- Deployment-ready inference pipeline
+
+---
+
+# 💾 Model Saving
+
+Final trained model:
+```text
+ECG_modelV2.keras
+```
+
+Saved to:
+```text
+Google Drive
+```
 
 ---
 
@@ -199,7 +328,7 @@ To efficiently process the large ECG dataset:
 - ✅ `tf.data.Dataset` pipelines were used
 - ✅ Prefetching and batching optimized memory usage
 
-These optimizations prevented runtime crashes and reduced RAM consumption.
+These optimizations reduced RAM usage and prevented runtime crashes.
 
 ---
 
@@ -225,8 +354,10 @@ These optimizations prevented runtime crashes and reduced RAM consumption.
 ├── data/
 ├── notebooks/
 ├── models/
+├── images/
 ├── plots/
 ├── best_cnn_model.keras
+├── ECG_modelV2.keras
 ├── README.md
 ```
 
@@ -240,7 +371,7 @@ These optimizations prevented runtime crashes and reduced RAM consumption.
 - 🤖 Explainable AI integration
 - 🔍 Grad-CAM visualization
 - ⚡ Memory-efficient training pipeline
-- 🧠 TensorFlow-based implementation
+- 🚀 Real-time ECG prediction system
 
 ---
 
@@ -251,9 +382,9 @@ Possible future enhancements:
 - CNN + BiLSTM hybrid models
 - Transformer-based ECG models
 - Focal loss for class imbalance
-- Advanced ECG signal denoising
-- External dataset validation
+- External ECG dataset validation
 - Lead-wise explainability analysis
+- ECG report generation
 
 ---
 
@@ -265,11 +396,21 @@ Potential real-world applications:
 - Smart healthcare systems
 - Remote ECG monitoring
 - AI-assisted cardiology
+- Emergency cardiac screening
 
 ---
 
 # 📌 Conclusion
 
-This project demonstrates an end-to-end deep learning framework for explainable ECG classification using the PTB-XL dataset. The model achieved strong performance while maintaining interpretability through Grad-CAM visualizations. The pipeline combines biomedical signal processing, efficient data handling, and explainable AI techniques for clinically relevant ECG analysis.
+This project demonstrates an end-to-end deep learning framework for explainable ECG classification using the PTB-XL dataset. The 1D CNN model achieved strong performance with a Micro F1-score of 0.7696 and a Macro AUROC of 0.9248 while maintaining interpretability through Grad-CAM visualizations.
+
+The project combines:
+- Biomedical signal processing
+- Deep learning
+- Explainable AI
+- Efficient data handling
+- Real-time prediction systems
+
+for clinically relevant ECG analysis.
 
 ---
