@@ -191,16 +191,8 @@ The model was trained for:
 ## 📊 Training Curves
 
 ### 🔹 Accuracy & Loss Curves
-> Add training accuracy/loss graph here
 
-```text
-images/training_curves.png
-```
-
-Example Markdown:
-```markdown
-![Training Curves](images/training_curves.png)
-```
+![Training Curves](assets/training.png)
 
 ---
 
