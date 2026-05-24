@@ -95,6 +95,9 @@ Where:
 - `1000` → Time samples
 - `12` → ECG leads
 
+## 📈 Sample ECG Waveform
+![Sample ECG Waveform](assets/sample.png)
+
 ### 📏 Normalization
 Z-score normalization was applied across ECG leads and time dimensions.
 
@@ -228,35 +231,13 @@ The best saved model (`best_cnn_model.keras`) was loaded for evaluation.
 
 # 📉 Confusion Matrices
 
-> Add confusion matrix images here
 
-```text
-images/confusion_matrix_cd.png
-images/confusion_matrix_mi.png
-images/confusion_matrix_norm.png
-```
-
-Example Markdown:
-```markdown
-![Confusion Matrix](images/confusion_matrix_mi.png)
-```
+![Confusion Matrix](assets/confusion.png)
 
 ---
 
 # 📈 ROC Curves
-
-> Add ROC curve visualizations here
-
-```text
-images/roc_curves.png
-```
-
-Example Markdown:
-```markdown
-![ROC Curves](images/roc_curves.png)
-```
-
----
+![ROC Curves](assets/AUC.png)
 
 # 🔍 Explainable AI using Grad-CAM
 
@@ -278,17 +259,8 @@ Grad-CAM was implemented to improve model interpretability and visualize the ECG
 
 ## 📌 Sample Grad-CAM Prediction
 
-> Add Grad-CAM prediction images here
+![Grad-CAM Visualization](assets/gradcam.png)
 
-```text
-images/gradcam_sample1.png
-images/gradcam_sample2.png
-```
-
-Example Markdown:
-```markdown
-![Grad-CAM Visualization](images/gradcam_sample1.png)
-```
 
 ---
 
@@ -302,6 +274,13 @@ These functions enable:
 - Real-time ECG prediction
 - ECG classification from custom file paths
 - Deployment-ready inference pipeline
+
+---
+
+# 📌 Sample Predictions
+
+## 🫀 ECG Prediction Example
+![Prediction](assets/prediction.png)
 
 ---
 
